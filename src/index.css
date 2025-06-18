@@ -1,0 +1,88 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100%;
+}
+.Spotify{
+  height: 100vh;
+  width: 100vw;
+}
+.Spotify::-webkit-scrollbar {
+  display: none;
+}
+
+.Content{
+  display: flex;
+  width: 100vw;
+  height: 85vh;
+  overflow: hidden;
+}
+
+@media (max-width: 1500px) {
+  .Spotify{
+    overflow-y: auto;
+  }
+  .Spotify::-webkit-scrollbar {
+    display: none;
+  }
+  .Content{
+    display: inline-block;
+    overflow: scroll;
+    align-items: center;
+    justify-content: center;
+  }
+  .Content::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+
+
+
+.card{
+  border: 1px solid black;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px black;
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
+  max-width: 250px;
+  display: inline-block;
+}
+
+.card .card-image{
+  max-width: 60%;
+  height: auto;
+  margin-bottom: 10px;  
+}
+
+.card .card-title{
+  font-family: Arial, sans-serif;
+  margin: 0;
+  color: black; 
+}
+
+.card .card-text{
+  font-family: Arial,sans-serif;
+  color: black;
+}
+
+.welcome-message{
+  font-size: 2.3em;
+  background-color: green;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0;
+}
+.login-prompt{
+  font-size: 2.3em;
+  background-color: red;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0;
+}

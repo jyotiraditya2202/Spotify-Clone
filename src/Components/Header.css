@@ -1,0 +1,183 @@
+/* Header styles */
+.header {
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  /* Left section (logo and home icon) */
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #1DB954; /* Spotify green */
+  }
+  
+  .home-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  /* Search bar styles */
+  .search-container {
+    flex: 1;
+    margin: 0 20px;
+    position: relative;
+  }
+  
+  .search-wrapper {
+    position: relative;
+    width: 30vw;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 5px;
+    top: 53%;
+    transform: translateY(-50%);
+    color: #ffffff;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .search-wrapper input {
+    width: 100%;
+    padding: 10px 10px 10px 40px; /* Space for the icon */
+    border-radius: 20px;
+    background-color: #333333;
+    border: 1px solid #444444;
+    color: #ffffff;
+  }
+  
+  /* Results div styles */
+  .results-div {
+    display: flex;
+    flex-direction: column;
+    height: 59vh;
+    position: absolute;
+    top: 120%;
+    left: 0.5%;
+    right: 0;
+    background-color: #272626;
+    color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    width: 30vw;
+    border-radius: 10px;
+    overflow-y: auto;
+  }
+
+  .results-div::-webkit-scrollbar{
+    display: none;
+  }
+  
+  .SearchSong-Card{
+    position: relative;        /* make this the positioning context */
+    display: flex;
+    align-items: center;       /* vertically center image, title, etc. */
+    padding: 0.5rem;
+    display: flex;
+    height: 4rem;
+    width: 100%;
+    margin: 5px;
+    color: white;
+    transition: 0.3s;
+  }
+
+  .SearchSong-Card img{
+    height: 51px;
+    margin: 10px;
+  }
+
+  /* Right section (links and buttons) */
+  .right-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .right-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .right-links a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 5px 10px;
+  }
+  
+  .right-links button {
+    padding: 5px 15px;
+    border-radius: 20px;
+  }
+  
+  .install-app {
+    background-color: transparent;
+    color: #ffffff;
+    border: 0.3px solid #ffffff;
+  }
+  
+  .login-btn {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  .SearchSong-Card:hover{
+    background-color: #333333;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 0.3s;
+  }
+
+  .SideBar{
+    position: absolute;
+    background-color: forestgreen;
+    color: black;
+    width: 20%;
+    height: 100vh;
+    top: 104%;
+    left: 0%;
+    padding: 10px;
+    z-index: 999;
+    overflow-y: auto;
+  }
+  .PlayListCard{
+    width: 100%;
+    background-color: #333333;
+    margin-bottom: 5px;
+    height: 5rem;
+    border-radius: 10px;
+  }
+  .home-icon:hover .SideBar{
+    display: flex;
+  }
+@media (max-width: 1000px) {
+  .results-div{
+      left: -97.40%;
+      width: 80vw;
+    }
+}
