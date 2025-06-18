@@ -1,0 +1,2 @@
+# Spotify-Clone
+this website is a clone of spotify website to show case my proficiency in web-development, This website is build with MERN stack, Also this website has integrated API of the songs database although it can only play the preview of the song as API's restrictions.
