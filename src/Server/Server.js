@@ -1,191 +1,68 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-py
+import express from "express";
+import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from "url";
+import cors from "cors";
+
 
 const app = express();
 app.use(cors());
-app.use(express.json());
 
-//--------Data Base Connection--------
-mongoose.connect('mongodb://localhost:27017/Spotify')
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+const PORT = process.env.PORT || 5000;
 
-//--------Model declarations--------
-const UserSchema = new mongoose.Schema({
-  name: String,
-  password: String
-});
-const Users = mongoose.model('users', UserSchema);
+// Resolve __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const PlayListSchema = new mongoose.Schema({
-  name: String,
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users',
-    required: true
-  }
-});
-const Playlists = mongoose.model('Playlists', PlayListSchema);
+// Serve React build
+app.use(express.static(path.join(__dirname, "client/build")));
 
-const PlaylistSongSchema = new mongoose.Schema({
-  playlist_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Playlists',
-    required: true
-  },
-  song_url: String
-});
-const PlaylistsSongs = mongoose.model('PlaylistsSongs', PlaylistSongSchema);
-
-//--------User Schema APIs--------
-
-// User Insert
-app.post('/User/insert', async (req, res) => {
-  const { name, password } = req.body;
-
+// ✅ API route comes BEFORE catch-all
+app.get("/api/trending", async (req, res) => {
   try {
-    if (!name || !password) {
-      return res.status(400).json({ error: 'All Fields are required!' });
-    }
+    const response = await fetch("https://api.deezer.com/chart/0/tracks?limit=100&index=0");
+    const data = await response.json();
 
-    const newUser = new Users({ name, password });
-    await newUser.save();
+    // Deezer's response is in data.data
+    const topTracks = data.data.map(track => ({
+      id: track.id,
+      title: track.title,
+      artist: track.artist.name,
+      posterUrl: track.album.cover_medium,
+      preview: track.preview,
+    }));
 
-    res.status(201).json(newUser);
+    res.json(topTracks);
   } catch (error) {
-    res.status(500).json({ error: 'Error Registering the user: ' + error.message });
+    console.error("API error:", error);
+    res.status(500).json({ error: "Failed to fetch trending songs" });
   }
 });
 
-// User Delete
-app.post('/User/delete', async (req, res) => {
-  const { id } = req.body;
-
+app.get("/api/search", async (req, res) => {
   try {
-    if (!id) {
-      return res.status(400).json({ error: 'User ID is required!' });
+    const query = req.query.q;
+    if (!query) {
+      return res.status(400).json({ error: "Query parameter 'q' is required" });
     }
 
-    const deletedUser = await Users.findByIdAndDelete(id);
+    const response = await fetch(
+      `https://api.deezer.com/search?q=${encodeURIComponent(query)}`
+    );
 
-    if (!deletedUser) {
-      return res.status(404).json({ error: 'User not found!' });
-    }
-
-    res.status(200).json({ message: 'User deleted successfully!' });
+    const data = await response.json();
+    res.json(data);
   } catch (error) {
-    res.status(500).json({ error: 'Error deleting the user: ' + error.message });
+    console.error("Error fetching search results:", error);
+    res.status(500).json({ error: "Failed to fetch search results" });
   }
 });
 
-// User Check (using Query Params for GET)
-app.post('/User/check', async (req, res) => {
-  const { Username, password } = req.body;
-
-  try {
-    if (!Username) {
-      return res.status(400).json({ error: 'User name is required!' });
-    }
-    const user = await Users.findOne({name: Username});
-    console.log(user);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found!' });
-    }
-    if (password !== user.password){
-        return res.status(401).json({ error: 'Invalid password!' });
-    }
-    res.status(200).json({ message: 'User exists!', user });
-  } catch (error) {
-    res.status(500).json({ error: 'Error checking user: ' + error.message });
-  }
+// ✅ React fallback (AFTER API route)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "../../../spotify(prod)", "index.html"));
 });
 
-//-----------Playlist Schema Operations---------
-
-// Playlist Insert
-app.post('/Playlist/insert', async (req, res) => {
-  const { name, id } = req.body;
-
-  try {
-    if (!name || !id) {
-      return res.status(400).json({ error: 'All Fields are required!' });
-    }
-
-    const newPlaylist = new Playlists({ name, user_id: id });
-    await newPlaylist.save();
-
-    res.status(201).json(newPlaylist);
-  } catch (error) {
-    res.status(500).json({ error: 'Error Creating the playlist: ' + error.message });
-  }
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-// Playlist Delete
-app.post('/Playlist/delete', async (req, res) => {
-  const { id } = req.body;
-
-  try {
-    if (!id) {
-      return res.status(400).json({ error: 'ID is required!' });
-    }
-
-    const deletedPlaylist = await Playlists.findByIdAndDelete(id);
-
-    if (!deletedPlaylist) {
-      return res.status(404).json({ error: 'Playlist not found!' });
-    }
-
-    res.status(200).json({ message: 'Playlist deleted successfully!' });
-  } catch (error) {
-    res.status(500).json({ error: 'Error deleting the playlist: ' + error.message });
-  }
-});
-
-// Playlist Check using playlist id
-
-app.post('/Playlist/check_id', async (req, res) => {
-    const {id} = req.query;
-  
-    try {
-      if (!id) {
-        return res.status(400).json({ error: 'ID is required!' });
-      }
-  
-      const checkPlaylist = await Playlists.findById(id);
-  
-      if (!checkPlaylist) {
-        return res.status(404).json({ error: 'Playlist not found!' });
-      }
-  
-      res.status(200).json({ message: 'Playlist exists!', playlist: checkPlaylist });
-    } catch (error) {
-      res.status(500).json({ error: 'Error checking playlist: ' + error.message });
-    }
-});
-
-// Playlist Check using user id
-
-app.post('/Playlist/check_user_id', async (req, res) => {
-    const {id} = req.body;
-
-    try {
-      if (!id) {
-        return res.status(400).json({ error: 'ID is required!' });
-      }
-  
-      const userPlaylists = await Playlists.find({ user_id: id });
-  
-      if (userPlaylists.length === 0) {
-        return res.status(404).json({ error: 'No playlists found for this user!' });
-      }
-  
-      res.status(200).json({ message: 'Playlists found!', playlists: userPlaylists });
-    } catch (error) {
-      res.status(500).json({ error: 'Error checking playlists: ' + error.message });
-    }
-});
-
-// Server Listen
-app.listen(5000, () => console.log('Server running on http://localhost:5000'));
