@@ -11,7 +11,7 @@ const MainContent = () => {
     const fetchTrendingSongs = async () => {
       try {
         const response = await fetch(
-          'https://corsproxy.io/?https://api.deezer.com/chart/0/tracks?limit=100&index=0'
+          'https://corsproxy.io/?key=849fcc50&url=https://api.deezer.com/chart/tracks?limit=100&index=0'
         );
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
