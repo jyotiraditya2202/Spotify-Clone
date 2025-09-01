@@ -180,8 +180,7 @@ const SearchBar = () => {
           </div>
           );
       };
-
-
+      
   //To Get the searched song from api
   const searchSong = async () => {
 
