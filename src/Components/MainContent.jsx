@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './MainContent.css';
 import useAudioPlayer from '../Hooks/HandleCurrentSong';
 
-const API_URL = import.meta.env.VITE_API_UR
+const API_URL = import.meta.env.VITE_API_URL
 
 
 const MainContent = () => {

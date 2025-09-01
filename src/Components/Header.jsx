@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import HandlePageState from '../Hooks/HandlePageState';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_URL = import.meta.env.VITE_API_UR
+const API_URL = import.meta.env.VITE_API_URL
 
 // Logo Component
 const Logo = () => {
