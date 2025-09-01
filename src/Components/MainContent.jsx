@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './MainContent.css';
 import useAudioPlayer from '../Hooks/HandleCurrentSong';
 
+const API_URL = import.meta.env.VITE_API_UR
+
+
 const MainContent = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,19 +13,16 @@ const MainContent = () => {
   useEffect(() => {
     const fetchTrendingSongs = async () => {
       try {
-        const response = await fetch(
-          'https://corsproxy.io/?key=849fcc50&url=https://api.deezer.com/chart/tracks?limit=100&index=0'
-        );
+        const response = await fetch(`${API_URL}/api/trending`); // ✅ call backend instead of corsproxy
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const result = await response.json();
-        const topTracks = result.tracks.data;
 
-        setSongs(topTracks.map(track => ({
+        setSongs(result.map(track => ({
           id: track.id,
           title: track.title,
-          artist: track.artist.name,
-          posterUrl: track.album.cover_medium,
+          artist: track.artist,
+          posterUrl: track.posterUrl,
           preview: track.preview
         })));
         
@@ -35,6 +35,7 @@ const MainContent = () => {
 
     fetchTrendingSongs();
   }, []);
+
 
   const SongCard = ({ song }) => {
     const handlePlay = () => {

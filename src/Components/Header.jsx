@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import HandlePageState from '../Hooks/HandlePageState';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const API_URL = import.meta.env.VITE_API_UR
 
 // Logo Component
 const Logo = () => {
@@ -185,7 +186,7 @@ const SearchBar = () => {
   const searchSong = async () => {
 
     if (!query) return;
-    const url = `https://thingproxy.freeboard.io/fetch/https://api.deezer.com/search?q=${encodeURIComponent(query)}`;
+    const url = `${API_URL}/api/search?q=${encodeURIComponent(query)}`;
 
     try {
         const response = await fetch(url);
